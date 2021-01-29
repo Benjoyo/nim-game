@@ -48,7 +48,7 @@ class NimIntegrationTests {
 
         // should execute turn
         val move = NimTurn(3)
-        mockMvc.perform(MockMvcRequestBuilders.post("/nim/move")
+        mockMvc.perform(MockMvcRequestBuilders.post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(MockMvcResultMatchers.status().isOk)

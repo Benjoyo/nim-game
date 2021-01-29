@@ -4,6 +4,7 @@ import de.bennet_krause.nim.game.exception.IllegalMoveException
 import de.bennet_krause.nim.game.exception.WrongTurnException
 import de.bennet_krause.nim.game.strategy.NimStrategy
 import de.bennet_krause.nim.game.strategy.RandomStrategy
+import de.bennet_krause.nim.game.strategy.WinOrientedStrategy
 import org.slf4j.LoggerFactory
 
 class NimGame {
@@ -16,7 +17,7 @@ class NimGame {
     }
 
     // the strategy that the computer is following
-    var computerStrategy: NimStrategy = RandomStrategy()
+    var computerStrategy: NimStrategy = WinOrientedStrategy()
 
     // last move that the computer did
     var lastComputerMove: Int = 0

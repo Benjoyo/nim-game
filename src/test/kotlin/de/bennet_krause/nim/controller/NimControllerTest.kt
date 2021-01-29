@@ -54,7 +54,7 @@ internal class NimControllerTest {
     fun `postMove should return OK for valid input`() {
         val move = NimTurn(3)
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isOk)
@@ -64,7 +64,7 @@ internal class NimControllerTest {
     fun `postMove should return 400 for invalid input`() {
         val move = NimTurn(-1)
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isBadRequest)
@@ -74,7 +74,7 @@ internal class NimControllerTest {
     fun `postMove should return 400 for missing nimCount`() {
         val move = NimTurn(null)
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isBadRequest)
@@ -84,7 +84,7 @@ internal class NimControllerTest {
     fun `postMove should call takePlayerTurn`() {
         val move = NimTurn(3)
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isOk)
@@ -140,7 +140,7 @@ internal class NimControllerTest {
 
         `when`(nimService.takePlayerTurn(anyInt())).thenReturn(state)
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isOk)
@@ -153,7 +153,7 @@ internal class NimControllerTest {
 
         `when`(nimService.takePlayerTurn(anyInt())).thenThrow(IllegalMoveException(""))
 
-        mockMvc.perform(post("/nim/move")
+        mockMvc.perform(post("/nim/turn")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(move)))
                 .andExpect(status().isBadRequest)
