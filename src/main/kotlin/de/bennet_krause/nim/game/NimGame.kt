@@ -131,6 +131,15 @@ class NimGame(
     }
 
     /**
+     * Sets the current state of the game.
+     */
+    fun setState(isPlayersTurn: Boolean, currentPileSize: Int, lastComputerMove: Int) {
+        this.isPlayersTurn = isPlayersTurn
+        this.currentPileSize = currentPileSize
+        this.lastComputerMove = lastComputerMove
+    }
+
+    /**
      * Reset nim game to initial state.
      */
     fun reset() {

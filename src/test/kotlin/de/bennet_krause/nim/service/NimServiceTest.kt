@@ -3,6 +3,8 @@ package de.bennet_krause.nim.service
 import de.bennet_krause.nim.game.NimGame
 import de.bennet_krause.nim.game.Status
 import de.bennet_krause.nim.model.NimConfig
+import de.bennet_krause.nim.model.NimPersistence
+import de.bennet_krause.nim.repository.NimPersistenceRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -14,10 +16,14 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.junit.jupiter.MockitoSettings
 import org.mockito.quality.Strictness
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 internal class NimServiceTest {
+
+    @Mock
+    private lateinit var nimPersistenceRepository: NimPersistenceRepository
 
     @Mock
     private lateinit var nimGame: NimGame
@@ -27,9 +33,12 @@ internal class NimServiceTest {
 
     @BeforeEach
     fun setUp() {
+
         `when`(nimGame.checkGameStatus()).thenReturn(Status.ONGOING)
         `when`(nimGame.takePlayerTurn(anyInt())).thenReturn(Status.ONGOING)
         `when`(nimGame.takeComputerTurn()).thenReturn(Status.ONGOING)
+
+        nimService.nimGame = nimGame
     }
 
 

@@ -3,7 +3,10 @@ package de.bennet_krause.nim.service
 import de.bennet_krause.nim.game.NimGame
 import de.bennet_krause.nim.game.Status
 import de.bennet_krause.nim.model.NimConfig
+import de.bennet_krause.nim.model.NimPersistence
 import de.bennet_krause.nim.model.NimState
+import de.bennet_krause.nim.repository.NimPersistenceRepository
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,11 +17,38 @@ import org.springframework.stereotype.Service
 class NimService(
 
         /**
-         * The actual nim game instance.
+         * Repository for persistent game state.
          */
         @field:Autowired
-        private val nimGame: NimGame
+        private val nimPersistenceRepository: NimPersistenceRepository
 ) {
+
+    private val log = LoggerFactory.getLogger(NimService::class.java)
+
+    /**
+     * The actual nim game instance. Either initialized from the database or created fresh.
+     */
+    internal lateinit var nimGame: NimGame
+
+    /**
+     * Get game state from database or create a new game.
+     */
+    init {
+        val persistenceOptional = nimPersistenceRepository.findById(NimPersistence.ID)
+        nimGame = if (persistenceOptional.isPresent) {
+            log.info("Load persisted game state")
+            // restore persisted game state
+            val persistence = persistenceOptional.get()
+            val game = NimGame(persistence.initialPileSize, persistence.maxNimCount)
+            game.setState(persistence.isPlayersTurn, persistence.currentPileSize, persistence.lastComputerMove)
+            game
+        } else {
+            log.info("No persisted game state, create new game")
+            // create new default game as there is no previous configuration and state
+            NimGame()
+        }
+    }
+
 
     /**
      * Returns the current [NimState] of the game.
@@ -45,6 +75,7 @@ class NimService(
         if (status == Status.ONGOING) {
             nimGame.takeComputerTurn()
         }
+        persistGame()
         // return result of both moves
         return currentState()
     }
@@ -54,6 +85,7 @@ class NimService(
      */
     fun resetGame(): NimState {
         nimGame.reset()
+        persistGame()
         return currentState()
     }
 
@@ -63,6 +95,26 @@ class NimService(
     fun configureGame(config: NimConfig) {
         nimGame.initialPileSize = config.initialPileSize!!
         nimGame.maxNimCount = config.maxNimCount!!
+        persistGame()
+    }
+
+    private fun persistGame() {
+
+        log.info("Persist game state")
+
+        val persistence = nimPersistenceRepository.findById(NimPersistence.ID).orElse(NimPersistence())
+
+        // state of running game
+        persistence.currentPileSize = nimGame.currentPileSize
+        persistence.isPlayersTurn = nimGame.isPlayersTurn
+        persistence.lastComputerMove = nimGame.lastComputerMove
+
+        // configuration
+        persistence.initialPileSize = nimGame.initialPileSize
+        persistence.maxNimCount = nimGame.maxNimCount
+
+        // save
+        nimPersistenceRepository.save(persistence)
     }
 }
 
