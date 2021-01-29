@@ -2,6 +2,7 @@ package de.bennet_krause.nim.service
 
 import de.bennet_krause.nim.game.NimGame
 import de.bennet_krause.nim.game.Status
+import de.bennet_krause.nim.model.NimConfig
 import de.bennet_krause.nim.model.NimState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -27,6 +28,7 @@ class NimService(
         return NimState(
                 nimGame.currentPileSize,
                 nimGame.checkGameStatus(),
+                nimGame.maxNimCount,
                 nimGame.lastComputerMove
         )
     }
@@ -53,6 +55,14 @@ class NimService(
     fun resetGame(): NimState {
         nimGame.reset()
         return currentState()
+    }
+
+    /**
+     * Configures the game according to the given [NimConfig].
+     */
+    fun configureGame(config: NimConfig) {
+        nimGame.initialPileSize = config.initialPileSize!!
+        nimGame.maxNimCount = config.maxNimCount!!
     }
 }
 

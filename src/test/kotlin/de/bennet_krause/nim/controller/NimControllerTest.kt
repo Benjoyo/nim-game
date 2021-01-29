@@ -1,9 +1,11 @@
 package de.bennet_krause.nim.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.nhaarman.mockitokotlin2.any
 import de.bennet_krause.nim.exception.NimError
 import de.bennet_krause.nim.game.Status
 import de.bennet_krause.nim.game.exception.IllegalMoveException
+import de.bennet_krause.nim.model.NimConfig
 import de.bennet_krause.nim.model.NimTurn
 import de.bennet_krause.nim.model.NimState
 import de.bennet_krause.nim.service.NimService
@@ -48,6 +50,49 @@ internal class NimControllerTest {
     fun `postReset should return OK`() {
         mockMvc.perform(post("/nim/reset"))
                 .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `postConfig should return OK for valid input`() {
+        val config = NimConfig(20, 5)
+
+        mockMvc.perform(post("/nim/config")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(config)))
+                .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `postConfig should return 400 for invalid input (1)`() {
+        val config = NimConfig(0, 5)
+
+        mockMvc.perform(post("/nim/config")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(config)))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `postConfig should return 400 for invalid input (2)`() {
+        val config = NimConfig(20, 0)
+
+        mockMvc.perform(post("/nim/config")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(config)))
+                .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `postConfig should return call configureGame`() {
+        val config = NimConfig(20, 5)
+
+        mockMvc.perform(post("/nim/config")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(config)))
+                .andExpect(status().isOk)
+
+        verify(nimService).configureGame(any())
+        verifyNoMoreInteractions(nimService)
     }
 
     @Test
@@ -113,7 +158,7 @@ internal class NimControllerTest {
 
     @Test
     fun `getState should return state`() {
-        val state = NimState(13, Status.ONGOING, 0)
+        val state = NimState(13, Status.ONGOING, 3,0)
 
         `when`(nimService.currentState()).thenReturn(state)
 
@@ -124,7 +169,7 @@ internal class NimControllerTest {
 
     @Test
     fun `postReset should return state`() {
-        val state = NimState(13, Status.ONGOING, 0)
+        val state = NimState(13, Status.ONGOING, 3,0)
 
         `when`(nimService.resetGame()).thenReturn(state)
 
@@ -136,7 +181,7 @@ internal class NimControllerTest {
     @Test
     fun `postMove should return state`() {
         val move = NimTurn(3)
-        val state = NimState(13, Status.ONGOING, 0)
+        val state = NimState(13, Status.ONGOING, 3, 0)
 
         `when`(nimService.takePlayerTurn(anyInt())).thenReturn(state)
 

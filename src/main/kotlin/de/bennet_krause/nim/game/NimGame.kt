@@ -7,14 +7,22 @@ import de.bennet_krause.nim.game.strategy.RandomStrategy
 import de.bennet_krause.nim.game.strategy.WinOrientedStrategy
 import org.slf4j.LoggerFactory
 
-class NimGame {
-
-    companion object {
-        private val log = LoggerFactory.getLogger(NimGame::class.java)
+class NimGame(
 
         // initial size of the nim pile
-        internal const val INITIAL_PILE_SIZE = 13
+        var initialPileSize: Int = DEFAULT_INITIAL_PILE_SIZE,
+
+        // maximum number of nims one can take
+        var maxNimCount: Int = DEFAULT_MAX_NIM_COUNT
+
+) {
+
+    companion object {
+        internal const val DEFAULT_INITIAL_PILE_SIZE = 13
+        internal const val DEFAULT_MAX_NIM_COUNT = 3
     }
+
+    private val log = LoggerFactory.getLogger(NimGame::class.java)
 
     // the strategy that the computer is following
     var computerStrategy: NimStrategy = WinOrientedStrategy()
@@ -24,15 +32,13 @@ class NimGame {
         private set
 
     // current number of nims on the pile, initially 13
-    var currentPileSize: Int = INITIAL_PILE_SIZE
+    var currentPileSize: Int = initialPileSize
         private set
 
     // true if it's the turn of the player, false if it's the turn of the computer
     var isPlayersTurn: Boolean = true
         private set
 
-    // maximum number of nims one can take
-    private val maxNimCount = 3
 
     /**
      * Takes a turn for the player. [nimCount] is the number of nims that the player wants to take in his move.
@@ -129,7 +135,7 @@ class NimGame {
      */
     fun reset() {
         lastComputerMove = 0
-        currentPileSize = INITIAL_PILE_SIZE
+        currentPileSize = initialPileSize
         isPlayersTurn = true
     }
 }

@@ -17,7 +17,7 @@ internal class NimGameTest {
 
     @Test
     fun `should have full pile initially`() {
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
     }
 
     @Test
@@ -35,7 +35,7 @@ internal class NimGameTest {
         assertThrows(IllegalMoveException::class.java) {
             nimGame.takePlayerTurn(0)
         }
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
     }
 
     @Test
@@ -43,7 +43,7 @@ internal class NimGameTest {
         assertThrows(IllegalMoveException::class.java) {
             nimGame.takePlayerTurn(-3)
         }
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
     }
 
     @Test
@@ -51,7 +51,7 @@ internal class NimGameTest {
         assertThrows(IllegalMoveException::class.java) {
             nimGame.takePlayerTurn(4)
         }
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
     }
 
     @Test
@@ -206,7 +206,7 @@ internal class NimGameTest {
         assertThrows(WrongTurnException::class.java) {
             nimGame.takeComputerTurn()
         }
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
     }
 
     @Test
@@ -232,7 +232,7 @@ internal class NimGameTest {
     fun `reset should reset all state (1)`() {
         nimGame.reset()
 
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
         assertEquals(0, nimGame.lastComputerMove)
         assertTrue(nimGame.isPlayersTurn)
     }
@@ -245,7 +245,7 @@ internal class NimGameTest {
 
         nimGame.reset()
 
-        assertEquals(NimGame.INITIAL_PILE_SIZE, nimGame.currentPileSize)
+        assertEquals(NimGame.DEFAULT_INITIAL_PILE_SIZE, nimGame.currentPileSize)
         assertEquals(0, nimGame.lastComputerMove)
         assertTrue(nimGame.isPlayersTurn)
     }

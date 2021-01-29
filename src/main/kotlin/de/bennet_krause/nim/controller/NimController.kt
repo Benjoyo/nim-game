@@ -1,6 +1,7 @@
 package de.bennet_krause.nim.controller
 
 import de.bennet_krause.nim.exception.NimError
+import de.bennet_krause.nim.model.NimConfig
 import de.bennet_krause.nim.model.NimTurn
 import de.bennet_krause.nim.model.NimState
 import de.bennet_krause.nim.service.NimService
@@ -43,7 +44,7 @@ class NimController(
     }
 
     /**
-     * Handles a POST request to /move
+     * Handles a POST request to /turn
      *
      * Takes a turn on behalf of the player, by taking away [NimTurn.nimCount] nims from the pile.
      * The computer will directly take its own turn afterwards, if possible.
@@ -74,6 +75,20 @@ class NimController(
     @PostMapping("/reset")
     fun postReset(): NimState {
         return nimService.resetGame()
+    }
+
+    /**
+     * Handles a POST request to /config
+     *
+     * Configures the initial number of nims on the pile and how many nims may be taken in a turn.
+     * The new initial number of nims will take effect after the next game reset, the new maximum number of nims allowed per turn takes effect with the next turn.
+     */
+    @Operation(summary = "Configure the game parameters",
+            description = "Configures the initial number of nims on the pile and how many nims may be taken in a turn. " +
+                    "The new initial number of nims will take effect after the next game reset, the new maximum number of nims allowed per turn takes effect with the next turn.")
+    @PostMapping("/config")
+    fun postConfig(@Valid @RequestBody config: NimConfig) {
+        return nimService.configureGame(config)
     }
 }
 

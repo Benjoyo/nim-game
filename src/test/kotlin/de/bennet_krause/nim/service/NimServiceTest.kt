@@ -2,6 +2,9 @@ package de.bennet_krause.nim.service
 
 import de.bennet_krause.nim.game.NimGame
 import de.bennet_krause.nim.game.Status
+import de.bennet_krause.nim.model.NimConfig
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.junit.jupiter.api.BeforeEach
@@ -62,5 +65,15 @@ internal class NimServiceTest {
         nimService.resetGame()
 
         verify(nimGame).reset()
+    }
+
+    @Test
+    fun `configureGame configures nim game`() {
+        val config = NimConfig(10, 5)
+
+        nimService.configureGame(config)
+
+        verify(nimGame).initialPileSize = 10
+        verify(nimGame).maxNimCount = 5
     }
 }

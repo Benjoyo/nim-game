@@ -21,8 +21,14 @@ class NimState(
         val status: Status,
 
         /**
-         * The number of nims the computer took in its last move.
+         * The number of nims one is allowed to take in a turn.
          */
-        @field:Schema(description = "The number of nims the computer took in its last move", example = "2", required = true)
+        @field:Schema(description = "The number of nims one is allowed to take in a turn", example = "3", required = true)
+        val maxNimCount: Int,
+
+        /**
+         * The number of nims the computer took in its last turn.
+         */
+        @field:Schema(description = "The number of nims the computer took in its last turn", example = "2", required = true)
         val lastComputerMove: Int
 )
